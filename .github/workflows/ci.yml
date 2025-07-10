@@ -20,6 +20,9 @@ jobs:
           - linux-stable
           - windows-stable
           - macos-stable
+        features:
+          - default
+          - all
         include:
           - build: linux-stable
             os: ubuntu-latest
@@ -30,6 +33,10 @@ jobs:
           - build: macos-stable
             os: macos-latest
             target: aarch64-apple-darwin
+          - features: default
+            feature-flag: ""
+          - features: all
+            feature-flag: --all-features
     runs-on: ${{ matrix.os }}
     env:
       CARGO_TERM_COLOR: always
@@ -40,7 +47,7 @@ jobs:
           toolchain: stable
           target: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --target ${{ matrix.target }}
+      - run: cargo test --target ${{ matrix.target }} ${{ matrix.feature-flag }}
   coverage:
     runs-on: ubuntu-latest
     env:
@@ -54,25 +61,15 @@ jobs:
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
       - uses: Swatinem/rust-cache@v2
-      - run: cargo llvm-cov clean --workspace
-      - name: Collect coverage on okane-golden
+      - name: Collect coverage
         run: |
-          cargo llvm-cov --no-report --all-features -p okane-golden
-      - name: Collect coverage on okane-core
-        run: |
-          cargo llvm-cov --no-report --all-features -p okane-core
-      - name: Collect coverage on okane CLI
-        run: |
-          cargo llvm-cov --no-report --all-features -p okane \
-             --ignore-filename-regex /core/
-      - name: Report collected coverage
-        run: cargo llvm-cov report --lcov --output-path lcov.info
+          cargo llvm-cov --all-features --lcov --output-path lcov.info
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
   benchmark:
-    name: Run report bench
+    name: Run benchmark
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -82,7 +79,8 @@ jobs:
           target: x86_64-unknown-linux-gnu
       - uses: Swatinem/rust-cache@v2
       - name: Run benchmark
-        run: cargo bench --bench decimal_bench --bench report_bench -- --output-format bencher | tee output.txt
+        run: |
+          cargo bench --bench bench -- --output-format bencher | tee output.txt
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
@@ -97,5 +95,6 @@ jobs:
           summary-always: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Push benchmark result
-        run: git push 'https://xkikeg:${{ secrets.GITHUB_TOKEN }}@github.com/xkikeg/okane.git' gh-pages:gh-pages
+        run: |
+          git push 'https://xkikeg:${{ secrets.GITHUB_TOKEN }}@github.com/xkikeg/pretty-decimal.git' gh-pages:gh-pages
         if: github.event_name != 'pull_request'
