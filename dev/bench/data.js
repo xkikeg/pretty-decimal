@@ -26,25 +26,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "parse/from_str/plain",
+            "name": "pretty-decimal/from_str/plain",
             "value": 25,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "parse/from_str/comma",
+            "name": "pretty-decimal/from_str/comma",
             "value": 26,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "to_stirng/to_string/plain",
+            "name": "pretty-decimal/to_string/plain",
             "value": 86,
             "range": "± 1",
             "unit": "ns/iter"
           },
           {
-            "name": "to_stirng/to_string/comma",
+            "name": "pretty-decimal/to_string/comma",
             "value": 87,
             "range": "± 1",
             "unit": "ns/iter"
