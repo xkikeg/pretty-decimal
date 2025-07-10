@@ -461,7 +461,7 @@ dependencies = [
 
 [[package]]
 name = "pretty_decimal"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bounded-static",
  "criterion",
