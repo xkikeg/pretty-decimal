@@ -2,6 +2,8 @@
 name = "pretty_decimal"
 version = "0.1.0"
 edition = "2024"
+license = "Apache-2.0"
+description = "library for Decimal type with pretty printing."
 
 [dependencies]
 bounded-static = { version = "0.8", default-features = false, features = ["derive"], optional = true}
