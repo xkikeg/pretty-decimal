@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1752160258680,
+  "lastUpdate": 1752162585681,
   "repoUrl": "https://github.com/xkikeg/pretty-decimal",
   "entries": {
     "Criterion.rs Benchmark": [
@@ -94,6 +94,54 @@ window.BENCHMARK_DATA = {
           {
             "name": "pretty-decimal/to_string/comma",
             "value": 86,
+            "range": "± 0",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "committer": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "distinct": true,
+          "id": "8432534fd2b39e51d91536c0254fcbd7a28b1cb8",
+          "message": "Improved README.",
+          "timestamp": "2025-07-10T17:48:44+02:00",
+          "tree_id": "2be084e5b394f2bf9675942567dd9481b7c0be85",
+          "url": "https://github.com/xkikeg/pretty-decimal/commit/8432534fd2b39e51d91536c0254fcbd7a28b1cb8"
+        },
+        "date": 1752162585199,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "pretty-decimal/from_str/plain",
+            "value": 25,
+            "range": "± 1",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/from_str/comma",
+            "value": 26,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/to_string/plain",
+            "value": 86,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/to_string/comma",
+            "value": 84,
             "range": "± 0",
             "unit": "ns/iter"
           }
