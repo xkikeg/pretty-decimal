@@ -1,0 +1,22 @@
+[package]
+name = "pretty_decimal"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bounded-static = { version = "0.8", default-features = false, features = ["derive"], optional = true}
+itoa = "1.0.15"
+rust_decimal = "1.37.2"
+thiserror = "2.0.12"
+
+[features]
+bounded-static = ["dep:bounded-static"]
+
+[[bench]]
+name = "bench"
+harness = false
+
+[dev-dependencies]
+criterion = "0.6.0"
+pretty_assertions = "1.4.1"
+rust_decimal_macros = "1.37.1"
