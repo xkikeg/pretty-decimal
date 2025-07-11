@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1752167747901,
+  "lastUpdate": 1752218537650,
   "repoUrl": "https://github.com/xkikeg/pretty-decimal",
   "entries": {
     "Criterion.rs Benchmark": [
@@ -239,6 +239,54 @@ window.BENCHMARK_DATA = {
             "name": "pretty-decimal/to_string/comma",
             "value": 84,
             "range": "± 0",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "committer": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "distinct": true,
+          "id": "5ca4d81e0dfa9ab8f43e4f8e5bbc61d235bafc55",
+          "message": "Downgrade edition to 2021.\n\nI don't need any special features with 2024.",
+          "timestamp": "2025-07-11T09:20:54+02:00",
+          "tree_id": "fafe506df7d8ff2f136eabb9ffb2eb038ec41ee0",
+          "url": "https://github.com/xkikeg/pretty-decimal/commit/5ca4d81e0dfa9ab8f43e4f8e5bbc61d235bafc55"
+        },
+        "date": 1752218537309,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "pretty-decimal/from_str/plain",
+            "value": 25,
+            "range": "± 1",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/from_str/comma",
+            "value": 26,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/to_string/plain",
+            "value": 87,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/to_string/comma",
+            "value": 84,
+            "range": "± 13",
             "unit": "ns/iter"
           }
         ]
