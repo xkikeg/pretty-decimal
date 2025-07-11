@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1752218537650,
+  "lastUpdate": 1752219059467,
   "repoUrl": "https://github.com/xkikeg/pretty-decimal",
   "entries": {
     "Criterion.rs Benchmark": [
@@ -287,6 +287,54 @@ window.BENCHMARK_DATA = {
             "name": "pretty-decimal/to_string/comma",
             "value": 84,
             "range": "± 13",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "committer": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "distinct": true,
+          "id": "03a6f35e34214cc1ff2ce6beea87db25ebb35c4b",
+          "message": "Relase v0.1.2.",
+          "timestamp": "2025-07-11T09:29:33+02:00",
+          "tree_id": "6403afd9aeb17b9eb3dcfa3127fb9cefb6cb155f",
+          "url": "https://github.com/xkikeg/pretty-decimal/commit/03a6f35e34214cc1ff2ce6beea87db25ebb35c4b"
+        },
+        "date": 1752219059135,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "pretty-decimal/from_str/plain",
+            "value": 25,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/from_str/comma",
+            "value": 26,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/to_string/plain",
+            "value": 87,
+            "range": "± 1",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "pretty-decimal/to_string/comma",
+            "value": 86,
+            "range": "± 0",
             "unit": "ns/iter"
           }
         ]
