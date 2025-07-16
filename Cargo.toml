@@ -6,6 +6,7 @@ license = "Apache-2.0"
 description = "library for Decimal type with pretty printing."
 
 [dependencies]
+arrayvec = "0.7.6"
 bounded-static = { version = "0.8", default-features = false, features = ["derive"], optional = true}
 itoa = "1.0.15"
 rust_decimal = "1.37.2"
