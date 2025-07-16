@@ -1,6 +1,22 @@
-//! Module to define [PrettyDecimal], [Decimal] with formatting.
+//! A [`Decimal`] with pretty printing.
+//!
+//! Library provides comma separated decimal.
+//!
+//! ```
+//! # use rust_decimal_macros::dec;
+//! # use pretty_decimal::PrettyDecimal;
+//! let x = PrettyDecimal::comma3dot(dec!(-1234567.890));
+//! assert_eq!(x.to_string(), "-1,234,567.890");
+//! ```
+//!
+//! ```
+//! # use rust_decimal_macros::dec;
+//! # use pretty_decimal::PrettyDecimal;
+//! let x: PrettyDecimal = "-1,234,567.890".parse().unwrap();
+//! assert_eq!(x.value, dec!(-1234567.890));
+//! ```
 
-use std::{convert::TryInto, fmt::Display, ops::Neg, str::FromStr};
+use std::{fmt::Display, ops::Neg, str::FromStr};
 
 use rust_decimal::Decimal;
 
@@ -19,12 +35,15 @@ pub enum Format {
     Comma3Dot,
 }
 
-/// Decimal with the original format information encoded.
-#[derive(Debug, Default, PartialEq, Eq, Clone)]
+/// Decimal with the pretty printing format information.
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
 #[non_exhaustive] // Don't want to construct directly.
 pub struct PrettyDecimal {
-    /// Format of the decimal, None means there's no associated information.
+    /// Format of the decimal, None means there's no associated format.
+    /// That makes difference on from_str, which concludes `Some(Plain)` if the given input is >= 1,000,
+    /// while it'll leave `None` format on 999 or below.
     pub format: Option<Format>,
+    /// Actual value of the Decimal.
     pub value: Decimal,
 }
 
@@ -55,8 +74,9 @@ impl IntoBoundedStatic for PrettyDecimal {
     }
 }
 
+/// Error occured during parsing.
 #[derive(thiserror::Error, PartialEq, Debug)]
-pub enum Error {
+pub enum ParseError {
     #[error("unexpected char {0} at {1}")]
     UnexpectedChar(String, usize),
     #[error("comma required at {0}")]
@@ -114,6 +134,58 @@ impl PrettyDecimal {
     }
 }
 
+/// Implementation of the Display trait.
+#[inline]
+fn display_comma_3_dot_impl<T: std::fmt::Write>(
+    mut w: T,
+    mut value: Decimal,
+    precision: Option<usize>,
+) -> std::fmt::Result {
+    let mut buf = itoa::Buffer::new();
+    if let Some(precision) = precision {
+        cold();
+        value = value.round_dp(precision as u32);
+    }
+    // Here we assume mantissa is all ASCII (given it's [0-9]+),
+    // so use unsafe method to avoid UTF-8 validation.
+    let mantissa = buf.format(value.mantissa()).as_bytes();
+    let scale: usize = value.scale() as usize;
+    let mut remainder = mantissa;
+    if value.is_sign_negative() {
+        w.write_str("-")?;
+        remainder = &mantissa[1..];
+    }
+    let mut initial_integer = true;
+    // caluclate the first comma position out of the integral portion digits.
+    let mut comma_pos = (remainder.len() - scale) % 3;
+    if comma_pos == 0 {
+        comma_pos = 3;
+    }
+    while remainder.len() > scale {
+        if !initial_integer {
+            w.write_str(",")?;
+        }
+        let section;
+        (section, remainder) = unsafe { remainder.split_at_unchecked(comma_pos) };
+        w.write_str(unsafe { str::from_utf8_unchecked(section) })?;
+        comma_pos = 3;
+        initial_integer = false;
+    }
+    if !remainder.is_empty() {
+        w.write_str(".")?;
+        w.write_str(unsafe { str::from_utf8_unchecked(remainder) })?;
+    }
+    if let Some(precision) = precision {
+        cold();
+        if precision > remainder.len() {
+            for _i in 0..(precision - remainder.len()) {
+                w.write_str("0")?;
+            }
+        }
+    }
+    Ok(())
+}
+
 impl From<PrettyDecimal> for Decimal {
     #[inline]
     fn from(value: PrettyDecimal) -> Self {
@@ -122,7 +194,7 @@ impl From<PrettyDecimal> for Decimal {
 }
 
 impl FromStr for PrettyDecimal {
-    type Err = Error;
+    type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         // Only ASCII chars supported, use bytes.
@@ -152,7 +224,7 @@ impl FromStr for PrettyDecimal {
                     comma_pos = None;
                 }
                 (Some(cp), _, _) if cp == i => {
-                    return Err(Error::CommaRequired(i));
+                    return Err(ParseError::CommaRequired(i));
                 }
                 _ if c.is_ascii_digit() => {
                     if scale.is_none() && format.is_none() && i >= 3 + prefix_len {
@@ -162,7 +234,7 @@ impl FromStr for PrettyDecimal {
                     scale = scale.map(|x| x + 1);
                 }
                 _ => {
-                    return Err(Error::UnexpectedChar(try_find_char(s, i, c), i));
+                    return Err(ParseError::UnexpectedChar(try_find_char(s, i, c), i));
                 }
             }
         }
@@ -184,8 +256,6 @@ fn try_find_char(s: &str, i: usize, chr: u8) -> String {
 
 impl Display for PrettyDecimal {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use std::fmt::Write as _;
-
         match self.format {
             Some(Format::Plain) | None => self.value.fmt(f),
             Some(Format::Comma3Dot) => {
@@ -193,42 +263,40 @@ impl Display for PrettyDecimal {
                     // no comma needed.
                     return self.value.fmt(f);
                 }
-                if self.value.is_sign_negative() {
-                    write!(f, "-")?;
-                }
-                let mut buf = itoa::Buffer::new();
-                let mantissa = buf.format(self.value.abs().mantissa());
-                let scale: usize = self
-                    .value
-                    .scale()
-                    .try_into()
-                    .expect("32-bit or larger bit system only");
-                let mut remainder = mantissa;
-                // Here we assume mantissa is all ASCII (given it's [0-9.]+)
-                let mut initial_integer = true;
-                // caluclate the first comma position out of the integral portion digits.
-                let mut comma_pos = (mantissa.len() - scale) % 3;
-                if comma_pos == 0 {
-                    comma_pos = 3;
-                }
-                while remainder.len() > scale {
-                    if !initial_integer {
-                        f.write_char(',')?;
+                let precision = f.precision();
+                if likely(f.width().is_none()) {
+                    if unlikely(f.sign_plus()) {
+                        f.write_str("+")?;
                     }
-                    let section;
-                    (section, remainder) = remainder.split_at(comma_pos);
-                    f.write_str(section)?;
-                    comma_pos = 3;
-                    initial_integer = false;
+                    display_comma_3_dot_impl(f, self.value, precision)
+                } else {
+                    let mut buf = arrayvec::ArrayString::<64>::new();
+                    display_comma_3_dot_impl(&mut buf, self.value.abs(), precision)?;
+                    f.pad_integral(!self.value.is_sign_negative(), "", buf.as_str())
                 }
-                if !remainder.is_empty() {
-                    f.write_char('.')?;
-                    f.write_str(remainder)?;
-                }
-                Ok(())
             }
         }
     }
+}
+
+#[inline]
+#[cold]
+fn cold() {}
+
+#[inline]
+fn likely(b: bool) -> bool {
+    if !b {
+        cold()
+    }
+    b
+}
+
+#[inline]
+fn unlikely(b: bool) -> bool {
+    if b {
+        cold()
+    }
+    b
 }
 
 #[cfg(test)]
@@ -314,32 +382,24 @@ mod tests {
     #[test]
     fn display_plain() {
         assert_eq!("1.234000", PrettyDecimal::plain(dec!(1.234000)).to_string());
+
+        assert_eq!(
+            "   1234.56",
+            format!("{:>10}", PrettyDecimal::plain(dec!(1234.56))),
+        );
     }
 
     #[test]
-    fn display_comma3_dot() {
-        assert_eq!("123", PrettyDecimal::comma3dot(dec!(123)).to_string());
-
-        assert_eq!("-1,234", PrettyDecimal::comma3dot(dec!(-1234)).to_string());
-
+    fn to_string_comma3_dot() {
         assert_eq!("0", PrettyDecimal::comma3dot(dec!(0)).to_string());
-
-        assert_eq!("0.1200", PrettyDecimal::comma3dot(dec!(0.1200)).to_string());
-
-        assert_eq!("0.0012", PrettyDecimal::comma3dot(dec!(0.0012)).to_string());
-
         assert_eq!(
-            // 12345678901234567890
-            "0.000000000000000000001",
-            PrettyDecimal::comma3dot(Decimal::new(1, 21)).to_string()
+            "0.0000000123",
+            PrettyDecimal::comma3dot(dec!(0.0000000123)).to_string()
         );
 
-        assert_eq!(
-            "1.234000",
-            PrettyDecimal::comma3dot(dec!(1.234000)).to_string()
-        );
+        assert_eq!("123", PrettyDecimal::comma3dot(dec!(123)).to_string());
+        assert_eq!("-123.4", PrettyDecimal::comma3dot(dec!(-123.4)).to_string());
 
-        assert_eq!("123.4", PrettyDecimal::comma3dot(dec!(123.4)).to_string());
         assert_eq!(
             "999.9999",
             PrettyDecimal::comma3dot(dec!(999.9999)).to_string()
@@ -348,13 +408,125 @@ mod tests {
             "-999.9999",
             PrettyDecimal::comma3dot(dec!(-999.9999)).to_string()
         );
-        assert_eq!("1,000", PrettyDecimal::comma3dot(dec!(1000)).to_string());
-        assert_eq!("-1,000", PrettyDecimal::comma3dot(dec!(-1000)).to_string());
+
+        assert_eq!("1,234", PrettyDecimal::comma3dot(dec!(1234)).to_string());
+        assert_eq!("-1,234", PrettyDecimal::comma3dot(dec!(-1234)).to_string());
+        assert_eq!(
+            "123,456",
+            PrettyDecimal::comma3dot(dec!(123456)).to_string()
+        );
+        assert_eq!(
+            "-123,456",
+            PrettyDecimal::comma3dot(dec!(-123456)).to_string()
+        );
+
+        assert_eq!(
+            "1,234.1200",
+            PrettyDecimal::comma3dot(dec!(1234) + dec!(0.1200)).to_string()
+        );
+        assert_eq!(
+            "1,234.0012",
+            PrettyDecimal::comma3dot(dec!(1234) + dec!(0.0012)).to_string()
+        );
+
+        assert_eq!(
+            //     12345678901234567890
+            "1,234.000000000000000000001",
+            PrettyDecimal::comma3dot(dec!(1234) + Decimal::new(1, 21)).to_string()
+        );
 
         assert_eq!(
             "1,234,567.890120",
             PrettyDecimal::comma3dot(dec!(1234567.890120)).to_string()
         );
+
+        let mut min = Decimal::MIN;
+        assert_eq!(
+            "-79,228,162,514,264,337,593,543,950,335",
+            PrettyDecimal::comma3dot(min).to_string()
+        );
+
+        min.set_scale(1).unwrap();
+        min.rescale(28);
+
+        assert_eq!(
+            "-7,922,816,251,426,433,759,354,395,033.5",
+            PrettyDecimal::comma3dot(min).to_string()
+        );
+    }
+
+    mod display_plain_precision {
+        use super::*;
+
+        use pretty_assertions::assert_eq;
+
+        #[test]
+        fn precision_0() {
+            assert_eq!(
+                "-79228162514264337593543950335",
+                format!("{:.0}", Decimal::MIN)
+            );
+        }
+
+        #[test]
+        #[ignore = "rust_decimal::Decimal format implementation is wrong"]
+        fn precision_5() {
+            assert_eq!(
+                "-79228162514264337593543950335.00000",
+                format!("{:.5}", Decimal::MIN)
+            );
+        }
+    }
+
+    #[test]
+    fn display_comma3_dot_precision() {
+        assert_eq!(
+            "1,235",
+            format!("{:.0}", PrettyDecimal::comma3dot(dec!(1234.56)))
+        );
+        assert_eq!(
+            "-1,234.6",
+            format!("{:.1}", PrettyDecimal::comma3dot(dec!(-1234.56)))
+        );
+        assert_eq!(
+            "1,234.56000",
+            format!("{:.5}", PrettyDecimal::comma3dot(dec!(1234.56)))
+        );
+    }
+
+    // just a test to compare against standard floating number.
+    #[test]
+    fn display_float_fill() {
+        assert_eq!("  -1.234", format!("{:>8}", -1.234));
+        assert_eq!("  -1.234", format!("{:8}", -1.234));
+        assert_eq!("_-1.234_", format!("{:_^8}", -1.234));
+        assert_eq!("-1.234  ", format!("{:<8}", -1.234));
+
+        // with 0 flag, alignment / fill will be ignored.
+        assert_eq!("+0001.24", format!("{:<+08.2}", 1.235));
+        assert_eq!("+0001.24", format!("{:+08.2}", 1.235));
+        assert_eq!("+01.2340", format!("{:+08.4}", 1.234));
+
+        // too small width ignored
+        assert_eq!("123456", format!("{:3}", 123456.0));
+        assert_eq!("1.00000000", format!("{:3.8}", 1.0));
+    }
+
+    #[test]
+    fn display_comma3_dot_fill() {
+        let val = PrettyDecimal::comma3dot(dec!(1234.56));
+
+        assert_eq!("  1,234.56", format!("{:>10}", val));
+        assert_eq!("  1,234.56", format!("{:10}", val));
+        assert_eq!("_1,234.56_", format!("{:_^10}", val));
+        assert_eq!("-1,234.56 ", format!("{:<10}", -val));
+
+        assert_eq!("001,234.56", format!("{:>010}", val));
+        assert_eq!("-01,234.56", format!("{:<010}", -val));
+
+        // too small width ignored
+        assert_eq!("1,234.56", format!("{:3}", val));
+        assert_eq!("1.00000000", format!("{:3.8}", Decimal::ONE));
     }
 
     #[test]
