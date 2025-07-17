@@ -26,25 +26,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 25,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 26,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 86,
             "range": "± 1",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 87,
             "range": "± 1",
             "unit": "ns/iter"
@@ -74,25 +74,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 25,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 26,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 86,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 86,
             "range": "± 0",
             "unit": "ns/iter"
@@ -122,25 +122,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 25,
             "range": "± 1",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 26,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 86,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 84,
             "range": "± 0",
             "unit": "ns/iter"
@@ -170,25 +170,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 25,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 26,
             "range": "± 1",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 87,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 84,
             "range": "± 0",
             "unit": "ns/iter"
@@ -218,25 +218,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 24,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 25,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 87,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 84,
             "range": "± 0",
             "unit": "ns/iter"
@@ -266,25 +266,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 25,
             "range": "± 1",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 26,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 87,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 84,
             "range": "± 13",
             "unit": "ns/iter"
@@ -314,25 +314,25 @@ window.BENCHMARK_DATA = {
         "tool": "cargo",
         "benches": [
           {
-            "name": "pretty-decimal/from_str/plain",
+            "name": "from_str/PrettyDecimal/plain-regular",
             "value": 25,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/from_str/comma",
+            "name": "from_str/PrettyDecimal/comma-regular",
             "value": 26,
             "range": "± 0",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/plain",
+            "name": "to_string/PrettyDecimal/plain-regular",
             "value": 87,
             "range": "± 1",
             "unit": "ns/iter"
           },
           {
-            "name": "pretty-decimal/to_string/comma",
+            "name": "to_string/PrettyDecimal/comma-regular",
             "value": 86,
             "range": "± 0",
             "unit": "ns/iter"
