@@ -4,6 +4,8 @@
 
 ### Added
 
+* Supported formatting options (https://github.com/xkikeg/pretty-decimal/pull/7).
+
 ### Changed
 
 ### Fixed
