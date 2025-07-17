@@ -48,5 +48,140 @@ fn to_string_benchmark(c: &mut Criterion) {
     }
 }
 
-criterion_group!(benches, from_str_benchmark, to_string_benchmark);
+fn display_benchmark(c: &mut Criterion) {
+    use std::io::Write as _;
+
+    let mut group = c.benchmark_group("display/simple");
+
+    for (name, value) in TEST_CASES {
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("plain-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{}", PrettyDecimal::plain(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("comma-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{}", PrettyDecimal::comma3dot(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+    }
+    group.finish();
+
+    let mut group = c.benchmark_group("display/padding");
+    for (name, value) in TEST_CASES {
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("plain-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:-^20}", PrettyDecimal::plain(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("comma-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:-^20}", PrettyDecimal::comma3dot(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+    }
+    group.finish();
+
+    let mut group = c.benchmark_group("display/precision");
+    for (name, value) in TEST_CASES {
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("plain-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:.5}", PrettyDecimal::plain(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("comma-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:.5}", PrettyDecimal::comma3dot(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+    }
+    group.finish();
+
+    let mut group = c.benchmark_group("display/sign");
+    for (name, value) in TEST_CASES {
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("plain-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:+}", PrettyDecimal::plain(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("comma-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:+}", PrettyDecimal::comma3dot(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+    }
+    group.finish();
+
+    let mut group = c.benchmark_group("display/zero-sign-precision");
+    for (name, value) in TEST_CASES {
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("plain-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:+08.5}", PrettyDecimal::plain(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+        group.bench_function(
+            BenchmarkId::new("PrettyDecimal", format!("comma-{}", name)),
+            |b| {
+                b.iter(|| {
+                    let mut buf = arrayvec::ArrayVec::<u8, 128>::new();
+                    write!(&mut buf, "{:+08.5}", PrettyDecimal::comma3dot(*value)).unwrap();
+                    black_box(buf)
+                })
+            },
+        );
+    }
+    group.finish();
+}
+
+criterion_group!(
+    benches,
+    from_str_benchmark,
+    to_string_benchmark,
+    display_benchmark
+);
 criterion_main!(benches);
