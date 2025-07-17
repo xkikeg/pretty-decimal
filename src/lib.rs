@@ -205,6 +205,8 @@ impl FromStr for PrettyDecimal {
         let mut prefix_len = 0;
         let mut sign = 1;
         let aligned_comma = |offset, cp, pos| match (cp, pos) {
+            // first comma may appear in the beginning 4 [0..=3] characters,
+            // otherwise there should be a comma before already.
             (None, _) if pos > offset && pos <= 3 + offset => true,
             _ if cp == Some(pos) => true,
             _ => false,
@@ -214,6 +216,9 @@ impl FromStr for PrettyDecimal {
                 (_, 0, b'-') => {
                     prefix_len = 1;
                     sign = -1;
+                }
+                (_, 0, b'+') => {
+                    prefix_len = 1;
                 }
                 (_, _, b',') if aligned_comma(prefix_len, comma_pos, i) => {
                     format = Some(Format::Comma3Dot);
@@ -371,11 +376,24 @@ mod tests {
 
         assert_eq!(
             Ok(PrettyDecimal::comma3dot(dec!(1234.567))),
-            "1,234.567".parse()
+            "+1,234.567".parse()
         );
         assert_eq!(
             Ok(PrettyDecimal::comma3dot(dec!(-1234.567))),
             "-1,234.567".parse()
+        );
+    }
+
+    #[test]
+    fn from_str_err() {
+        assert_eq!(
+            ParseError::UnexpectedChar(format!(","), 4),
+            PrettyDecimal::from_str("1234,567").unwrap_err()
+        );
+
+        assert_eq!(
+            ParseError::CommaRequired(5),
+            PrettyDecimal::from_str("1,2345,67").unwrap_err()
         );
     }
 
@@ -519,6 +537,7 @@ mod tests {
         assert_eq!("  1,234.56", format!("{:>10}", val));
         assert_eq!("  1,234.56", format!("{:10}", val));
         assert_eq!("_1,234.56_", format!("{:_^10}", val));
+        assert_eq!("+1,234.56 ", format!("{:<+10}", val));
         assert_eq!("-1,234.56 ", format!("{:<10}", -val));
 
         assert_eq!("001,234.56", format!("{:>010}", val));
