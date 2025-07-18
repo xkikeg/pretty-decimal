@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1752737085614,
+  "lastUpdate": 1752823501775,
   "repoUrl": "https://github.com/xkikeg/pretty-decimal",
   "entries": {
     "Criterion.rs Benchmark": [
@@ -574,6 +574,366 @@ window.BENCHMARK_DATA = {
           {
             "name": "to_string/PrettyDecimal/comma-tiny",
             "value": 71,
+            "range": "± 0",
+            "unit": "ns/iter"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "committer": {
+            "email": "kikeg@kikeg.com",
+            "name": "kikeg",
+            "username": "xkikeg"
+          },
+          "distinct": true,
+          "id": "16efdbf0d1c7b9e51192688e3c1a1d3ee2552bc2",
+          "message": "Add tests guarding parse failure and sign formatting.\n\nThis would increase the code coverage.",
+          "timestamp": "2025-07-18T09:14:21+02:00",
+          "tree_id": "9ce8159195bc656eec64a84662753aca2876640b",
+          "url": "https://github.com/xkikeg/pretty-decimal/commit/16efdbf0d1c7b9e51192688e3c1a1d3ee2552bc2"
+        },
+        "date": 1752823501413,
+        "tool": "cargo",
+        "benches": [
+          {
+            "name": "from_str/PrettyDecimal/plain-regular",
+            "value": 30,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/comma-regular",
+            "value": 32,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/plain-negative",
+            "value": 32,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/comma-negative",
+            "value": 34,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/plain-small",
+            "value": 15,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/comma-small",
+            "value": 15,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/plain-tiny",
+            "value": 30,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "from_str/PrettyDecimal/comma-tiny",
+            "value": 30,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/plain-regular",
+            "value": 86,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/comma-regular",
+            "value": 93,
+            "range": "± 3",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/plain-negative",
+            "value": 98,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/comma-negative",
+            "value": 91,
+            "range": "± 4",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/plain-small",
+            "value": 58,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/comma-small",
+            "value": 68,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/plain-tiny",
+            "value": 61,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "to_string/PrettyDecimal/comma-tiny",
+            "value": 71,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/plain-regular",
+            "value": 85,
+            "range": "± 3",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/comma-regular",
+            "value": 88,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/plain-negative",
+            "value": 88,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/comma-negative",
+            "value": 91,
+            "range": "± 3",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/plain-small",
+            "value": 60,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/comma-small",
+            "value": 72,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/plain-tiny",
+            "value": 62,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/simple/PrettyDecimal/comma-tiny",
+            "value": 75,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/plain-regular",
+            "value": 133,
+            "range": "± 2",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/comma-regular",
+            "value": 115,
+            "range": "± 2",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/plain-negative",
+            "value": 133,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/comma-negative",
+            "value": 114,
+            "range": "± 2",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/plain-small",
+            "value": 151,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/comma-small",
+            "value": 160,
+            "range": "± 1",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/plain-tiny",
+            "value": 108,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/padding/PrettyDecimal/comma-tiny",
+            "value": 123,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/plain-regular",
+            "value": 89,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/comma-regular",
+            "value": 112,
+            "range": "± 2",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/plain-negative",
+            "value": 91,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/comma-negative",
+            "value": 116,
+            "range": "± 4",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/plain-small",
+            "value": 64,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/comma-small",
+            "value": 75,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/plain-tiny",
+            "value": 61,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/precision/PrettyDecimal/comma-tiny",
+            "value": 73,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/plain-regular",
+            "value": 89,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/comma-regular",
+            "value": 97,
+            "range": "± 3",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/plain-negative",
+            "value": 89,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/comma-negative",
+            "value": 103,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/plain-small",
+            "value": 64,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/comma-small",
+            "value": 76,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/plain-tiny",
+            "value": 65,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/sign/PrettyDecimal/comma-tiny",
+            "value": 81,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/plain-regular",
+            "value": 92,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/comma-regular",
+            "value": 93,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/plain-negative",
+            "value": 91,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/comma-negative",
+            "value": 94,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/plain-small",
+            "value": 66,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/comma-small",
+            "value": 78,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/plain-tiny",
+            "value": 63,
+            "range": "± 0",
+            "unit": "ns/iter"
+          },
+          {
+            "name": "display/zero-sign-precision/PrettyDecimal/comma-tiny",
+            "value": 76,
             "range": "± 0",
             "unit": "ns/iter"
           }
