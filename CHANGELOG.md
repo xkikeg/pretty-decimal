@@ -4,6 +4,7 @@
 
 ### Added
 
+* New API to construct value with format (https://github.com/xkikeg/pretty-decimal/pull/10).
 * Supported formatting options (https://github.com/xkikeg/pretty-decimal/pull/7).
 
 ### Changed
