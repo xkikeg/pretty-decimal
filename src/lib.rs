@@ -86,31 +86,35 @@ pub enum ParseError {
 }
 
 impl PrettyDecimal {
-    /// Constructs unformatted PrettyDecimal.
+    /// Constructs unformatted `PrettyDecimal`.
     #[inline]
     pub const fn unformatted(value: Decimal) -> Self {
-        Self {
-            format: None,
-            value,
-        }
+        Self::with_format(value, None)
     }
 
-    /// Constructs plain PrettyDecimal.
+    /// Constructs plain `PrettyDecimal`.
     #[inline]
     pub const fn plain(value: Decimal) -> Self {
-        Self {
-            format: Some(Format::Plain),
-            value,
-        }
+        Self::with_format(value, Some(Format::Plain))
     }
 
     /// Constructs comma3 PrettyDecimal.
     #[inline]
     pub const fn comma3dot(value: Decimal) -> Self {
-        Self {
-            format: Some(Format::Comma3Dot),
-            value,
-        }
+        Self::with_format(value, Some(Format::Comma3Dot))
+    }
+
+    /// Constructs an instance with the given format.
+    #[inline]
+    pub const fn with_format(value: Decimal, format: Option<Format>) -> Self {
+        Self { format, value }
+    }
+
+    /// Returns the reference to the underlying decimal value.
+    // Note: Decimal is Copy, so no penalty to use reference.
+    #[inline]
+    pub const fn as_decimal(&self) -> &Decimal {
+        &self.value
     }
 
     /// Returns the current scale.
@@ -189,7 +193,19 @@ fn display_comma_3_dot_impl<T: std::fmt::Write>(
 impl From<PrettyDecimal> for Decimal {
     #[inline]
     fn from(value: PrettyDecimal) -> Self {
-        value.value
+        *value.as_decimal()
+    }
+}
+
+impl AsRef<Decimal> for PrettyDecimal {
+    fn as_ref(&self) -> &Decimal {
+        self.as_decimal()
+    }
+}
+
+impl AsMut<Decimal> for PrettyDecimal {
+    fn as_mut(&mut self) -> &mut Decimal {
+        &mut self.value
     }
 }
 
@@ -310,6 +326,16 @@ mod tests {
 
     use pretty_assertions::assert_eq;
     use rust_decimal_macros::dec;
+
+    #[test]
+    fn conversions() {
+        let mut pd = PrettyDecimal::with_format(dec!(1), Some(Format::Comma3Dot));
+        assert!(std::ptr::eq(pd.as_decimal(), &pd.value));
+        assert!(std::ptr::eq(pd.as_ref(), &pd.value));
+        *pd.as_mut() = dec!(2);
+        let pvalue: Decimal = pd.into();
+        assert_eq!(pvalue, dec!(2));
+    }
 
     #[test]
     fn from_str_unformatted() {
