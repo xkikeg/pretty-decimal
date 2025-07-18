@@ -4,12 +4,16 @@
 
 ### Added
 
-* New API to construct value with format (https://github.com/xkikeg/pretty-decimal/pull/10).
-* Supported formatting options (https://github.com/xkikeg/pretty-decimal/pull/7).
-
 ### Changed
 
 ### Fixed
+
+## [0.1.3] - 2025-07-18
+
+### Added
+
+* New API to construct value with format (https://github.com/xkikeg/pretty-decimal/pull/10).
+* Supported formatting options (https://github.com/xkikeg/pretty-decimal/pull/7).
 
 ## [0.1.2] - 2025-07-11
 
