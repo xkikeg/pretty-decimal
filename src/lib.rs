@@ -171,13 +171,13 @@ fn display_comma_3_dot_impl<T: std::fmt::Write>(
         }
         let section;
         (section, remainder) = unsafe { remainder.split_at_unchecked(comma_pos) };
-        w.write_str(unsafe { str::from_utf8_unchecked(section) })?;
+        w.write_str(unsafe { std::str::from_utf8_unchecked(section) })?;
         comma_pos = 3;
         initial_integer = false;
     }
     if !remainder.is_empty() {
         w.write_str(".")?;
-        w.write_str(unsafe { str::from_utf8_unchecked(remainder) })?;
+        w.write_str(unsafe { std::str::from_utf8_unchecked(remainder) })?;
     }
     if let Some(precision) = precision {
         cold();
