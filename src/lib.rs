@@ -61,7 +61,7 @@ impl ToBoundedStatic for PrettyDecimal {
     type Static = Self;
 
     fn to_static(&self) -> <Self as ToBoundedStatic>::Static {
-        self.clone()
+        *self
     }
 }
 
@@ -272,7 +272,7 @@ fn try_find_char(s: &str, i: usize, chr: u8) -> String {
         .unwrap_or(s.len());
     s.get(begin..end)
         .map(ToOwned::to_owned)
-        .unwrap_or_else(|| format!("{:?}", chr))
+        .unwrap_or_else(|| format!("{chr:?}"))
 }
 
 impl Display for PrettyDecimal {
@@ -413,7 +413,7 @@ mod tests {
     #[test]
     fn from_str_err() {
         assert_eq!(
-            ParseError::UnexpectedChar(format!(","), 4),
+            ParseError::UnexpectedChar(",".to_string(), 4),
             PrettyDecimal::from_str("1234,567").unwrap_err()
         );
 
