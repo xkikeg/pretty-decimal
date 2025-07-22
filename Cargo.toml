@@ -2,6 +2,7 @@
 name = "pretty_decimal"
 version = "0.2.0"
 edition = "2021"
+rust-version = "1.79.0"
 license = "Apache-2.0"
 description = "library for Decimal type with pretty printing."
 
