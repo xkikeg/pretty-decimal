@@ -8,6 +8,12 @@
 
 ### Fixed
 
+## [0.2.1] - ReleaseDate
+
+### Fixed
+
+* Supported Rust version 1.79.0, also lowered edition to 2018.
+
 ## [0.2.0] - 2025-07-18
 
 ### Added
