@@ -9,9 +9,9 @@ description = "library for Decimal type with pretty printing."
 [dependencies]
 arrayvec = "0.7.6"
 bounded-static = { version = "0.8", default-features = false, features = ["derive"], optional = true}
-itoa = "1.0.15"
-rust_decimal = "1.37.2"
-thiserror = "2.0.12"
+itoa = "1.0.17"
+rust_decimal = "1.40.0"
+thiserror = "2.0.17"
 
 [features]
 bounded-static = ["dep:bounded-static"]
@@ -21,6 +21,6 @@ name = "bench"
 harness = false
 
 [dev-dependencies]
-criterion = "0.6.0"
+criterion = "0.8.1"
 pretty_assertions = "1.4.1"
-rust_decimal_macros = "1.37.1"
+rust_decimal_macros = "1.40.0"
