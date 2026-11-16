@@ -86,7 +86,12 @@ jobs:
           target: x86_64-unknown-linux-gnu
       - uses: Swatinem/rust-cache@v2
       - name: Run benchmark
+        # rust-cache may restore a partial target/criterion (e.g. base/ without
+        # sample.json), which makes Criterion print errors that break the
+        # bencher output parsing. Comparison is done by github-action-benchmark,
+        # so Criterion's local baseline is not needed.
         run: |
+          rm -rf target/criterion
           cargo bench --bench bench -- --output-format bencher | tee output.txt
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
