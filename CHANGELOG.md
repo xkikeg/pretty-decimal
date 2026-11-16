@@ -6,7 +6,16 @@
 
 ### Changed
 
+* `ParseError` has a new variant `UnexpectedEnd`. As the enum isn't `#[non_exhaustive]`, this is a
+  breaking change for code matching on it exhaustively.
+
 ### Fixed
+
+* `FromStr` rejected malformed numbers it used to accept:
+  * no digit at all: `""`, `"-"`, `"+"`, `"."`, `"-."` were parsed as 0.
+  * a second `.`: `"1..2"` was parsed as 1.2, and `"1.2.3"` as 12.3.
+  * an incomplete digit group after a comma: `"1,"` was parsed as 1, `"1,23"` as 123, and
+    `"12,34"` as 1234.
 
 ## [0.2.1] - ReleaseDate
 

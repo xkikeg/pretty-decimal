@@ -81,6 +81,8 @@ pub enum ParseError {
     UnexpectedChar(String, usize),
     #[error("comma required at {0}")]
     CommaRequired(usize),
+    #[error("unexpected end of input at {0}")]
+    UnexpectedEnd(usize),
     #[error("unexpressible decimal {0}")]
     InvalidDecimal(#[from] rust_decimal::Error),
 }
@@ -220,6 +222,7 @@ impl FromStr for PrettyDecimal {
         let mut scale: Option<u32> = None;
         let mut prefix_len = 0;
         let mut sign = 1;
+        let mut has_digit = false;
         let aligned_comma = |offset, cp, pos| match (cp, pos) {
             // first comma may appear in the beginning 4 [0..=3] characters,
             // otherwise there should be a comma before already.
@@ -240,7 +243,9 @@ impl FromStr for PrettyDecimal {
                     format = Some(Format::Comma3Dot);
                     comma_pos = Some(i + 4);
                 }
-                (_, _, b'.') if comma_pos.is_none() || comma_pos == Some(i) => {
+                (_, _, b'.')
+                    if scale.is_none() && (comma_pos.is_none() || comma_pos == Some(i)) =>
+                {
                     scale = Some(0);
                     comma_pos = None;
                 }
@@ -251,6 +256,7 @@ impl FromStr for PrettyDecimal {
                     if scale.is_none() && format.is_none() && i >= 3 + prefix_len {
                         format = Some(Format::Plain);
                     }
+                    has_digit = true;
                     mantissa = mantissa * 10 + (c as u32 - '0' as u32) as i128;
                     scale = scale.map(|x| x + 1);
                 }
@@ -258,6 +264,10 @@ impl FromStr for PrettyDecimal {
                     return Err(ParseError::UnexpectedChar(try_find_char(s, i, c), i));
                 }
             }
+        }
+        // Needs a digit, and the digit group after the last comma must be complete.
+        if !has_digit || comma_pos.is_some_and(|cp| cp != s.len()) {
+            return Err(ParseError::UnexpectedEnd(s.len()));
         }
         let value = Decimal::try_from_i128_with_scale(sign * mantissa, scale.unwrap_or(0))?;
         Ok(Self { format, value })
@@ -421,6 +431,52 @@ mod tests {
             ParseError::CommaRequired(5),
             PrettyDecimal::from_str("1,2345,67").unwrap_err()
         );
+    }
+
+    #[test]
+    fn from_str_err_no_digit() {
+        for (input, pos) in [("", 0), ("-", 1), ("+", 1), (".", 1), ("-.", 2)] {
+            assert_eq!(
+                ParseError::UnexpectedEnd(pos),
+                PrettyDecimal::from_str(input).unwrap_err(),
+                "{input:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn from_str_err_second_dot() {
+        assert_eq!(
+            ParseError::UnexpectedChar(".".to_string(), 2),
+            PrettyDecimal::from_str("1..2").unwrap_err()
+        );
+        assert_eq!(
+            ParseError::UnexpectedChar(".".to_string(), 3),
+            PrettyDecimal::from_str("1.2.3").unwrap_err()
+        );
+        assert_eq!(
+            ParseError::UnexpectedChar(".".to_string(), 9),
+            PrettyDecimal::from_str("1,234.567.8").unwrap_err()
+        );
+    }
+
+    #[test]
+    fn from_str_err_incomplete_group() {
+        for (input, pos) in [("1,", 2), ("1,23", 4), ("12,34", 5), ("1,234,", 6)] {
+            assert_eq!(
+                ParseError::UnexpectedEnd(pos),
+                PrettyDecimal::from_str(input).unwrap_err(),
+                "{input:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn from_str_accepts_bare_dot_edges() {
+        // Like `str::parse::<f64>()`, a fraction or an integer part may be empty.
+        assert_eq!(Ok(PrettyDecimal::unformatted(dec!(0.5))), ".5".parse());
+        assert_eq!(Ok(PrettyDecimal::unformatted(dec!(1))), "1.".parse());
+        assert_eq!(Ok(PrettyDecimal::comma3dot(dec!(1234))), "1,234.".parse());
     }
 
     #[test]
