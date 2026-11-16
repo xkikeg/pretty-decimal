@@ -6,6 +6,12 @@
 
 ### Changed
 
+### Fixed
+
+## [0.3.0] - 2026-11-16
+
+### Changed
+
 * `ParseError` has a new variant `UnexpectedEnd`. As the enum isn't `#[non_exhaustive]`, this is a
   breaking change for code matching on it exhaustively.
 
